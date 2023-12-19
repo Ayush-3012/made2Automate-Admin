@@ -3,8 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import ImageUpload from "../partials/ImageUpload";
 import { useSnackbar } from "notistack";
-import { useNavigate } from "react-router-dom";
-import { useProduct } from "../../context/ProductContext";
+import { useNavigate, useLocation } from "react-router-dom";
 import Loader from "../partials/Loader";
 
 const AddProduct = () => {
@@ -22,7 +21,14 @@ const AddProduct = () => {
   });
   const navigator = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const { setCurrentProduct } = useProduct();
+  const location = useLocation();
+  let barcode = location.state;
+
+  if (!barcode) {
+    const min = Math.pow(10, 11);
+    const max = Math.pow(10, 12) - 1;
+    barcode = Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 
   const onChangeData = (e) => {
     const { name, value } = e.target;
@@ -51,14 +57,14 @@ const AddProduct = () => {
     formData.append("quantity", product.quantity);
     formData.append("category", product.category);
     formData.append("price", product.price);
+    formData.append("barcodeDigits", barcode);
 
     await axios
       .post(`${import.meta.env.VITE_API_ROUTE}/product/add-product`, formData)
       .then((res) => {
         const { message, createdProduct } = res.data;
-        setCurrentProduct(createdProduct._id);
         enqueueSnackbar(message, { variant: "success" });
-        navigator("/product");
+        navigator(`/product/${createdProduct._id}`);
         setLoading(false);
       })
       .catch((err) => {
@@ -76,7 +82,9 @@ const AddProduct = () => {
         <div className="py-2 text-center mx-2 border-b-black border-2 text-slate-800 text-4xl max-md:text-3xl">
           Add Product
         </div>
-        {loading ? <Loader /> : (
+        {loading ? (
+          <Loader />
+        ) : (
           <form
             onSubmit={(e) => onSubmit(e)}
             className="flex flex-col gap-2 py-2 items-center"

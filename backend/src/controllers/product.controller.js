@@ -1,17 +1,24 @@
 import { Product } from "../models/product.models.js";
+import { Stock } from "../models/stock.model.js";
 import { generateBarcode } from "../utils/barcode.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import axios from "axios";
 
 export const getProduct = async (req, res) => {
   const { id } = req.query;
-  await Product.findById({ _id: id })
-    .then((found) => {
-      return res.status(201).json(found);
-    })
-    .catch(() => {
-      return res.status(400).json({ message: "Server Error" });
-    });
+  try {
+    if (id.length > 12) {
+      const foundById = await Product.findOne({ _id: id });
+      return res.status(201).json(foundById);
+    } else if (id.length === 12) {
+      const foundByBarcode = await Product.findOne({ barcodeDigits: id });
+      return res.status(201).json(foundByBarcode);
+    } else {
+      return res.status(404).json({ message: "Product not found" });
+    }
+  } catch (error) {
+    return res.status(400).json({ message: "Server Error" });
+  }
 };
 
 export const getAllProduct = async (req, res) => {
@@ -34,6 +41,7 @@ export const addProduct = async (req, res) => {
       quantity,
       price,
       category,
+      barcodeDigits,
     } = req.body;
 
     if (
@@ -53,7 +61,7 @@ export const addProduct = async (req, res) => {
     const imageLocalPath = req.files?.productImage[0]?.path;
     if (!imageLocalPath) res.status(400).json({ message: "Image not found" });
 
-    const { barcodeLocalPath, barcodeDigits } = await generateBarcode();
+    const { barcodeLocalPath } = await generateBarcode({ barcodeDigits });
     if (!barcodeLocalPath)
       res.status(400).json({ message: "Barcode not found" });
 
@@ -123,4 +131,52 @@ export const listProduct = async (req, res) => {
       console.log(err);
       return res.status(400).json({ message: "Error while listing product" });
     });
+};
+
+export const getUpdatedStock = async (req, res) => {
+  await Stock.find()
+    .then((found) => {
+      return res.status(201).json(found);
+    })
+    .catch(() => {
+      return res.status(400).json({ message: "Server Error" });
+    });
+};
+
+export const addToStock = async (req, res) => {
+  try {
+    const { productId, quantity } = req.body; 
+    const foundProduct = await Product.findOne({ _id: productId });
+    const newQuantity = foundProduct.quantity + Number(quantity);
+
+    await Product.findOneAndUpdate(
+      { _id: productId },
+      { $set: { quantity: newQuantity } },
+      { new: true }
+    );
+    return res.status(201).json({ message: "Stock Updated" });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ message: "Something went wrong" });
+  }
+};
+
+export const updateStock = async (req, res) => {
+  try {
+    const { productId, totalOrders, totalStocks, totalLeads, totalRevenue } =
+      req.body;
+
+    await Stock.create({
+      productId,
+      totalOrders,
+      totalStocks,
+      totalLeads,
+      totalRevenue,
+    });
+
+    return res.status(201).json({ message: "Stock Updated" });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ message: "Something went wrong" });
+  }
 };
