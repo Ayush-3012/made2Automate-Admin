@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
   {
+    barcodeDigits: {
+      type: Number,
+      required: true,
+      unique: true,
+    },
     productImage: {
       type: String,
       required: true,
