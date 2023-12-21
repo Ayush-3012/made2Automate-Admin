@@ -82,7 +82,13 @@ export const addProduct = async (req, res) => {
     });
 
     const createdProduct = await Product.findById(newProduct._id);
-
+    await Stock.create({
+      productId: newProduct._id,
+      totalOrders: 0,
+      totalStocks: newProduct.quantity,
+      totalLeads: 0,
+      totalRevenue: 0,
+    });
     return res
       .status(201)
       .json({ message: "Product Added Successfully", createdProduct });
@@ -145,14 +151,24 @@ export const getUpdatedStock = async (req, res) => {
 
 export const addToStock = async (req, res) => {
   try {
-    const { productId, quantity } = req.body; 
+    const { productId, quantity } = req.body;
     const foundProduct = await Product.findOne({ _id: productId });
     const newQuantity = foundProduct.quantity + Number(quantity);
 
     await Product.findOneAndUpdate(
-      { _id: productId },
+      { _id: foundProduct._id },
       { $set: { quantity: newQuantity } },
       { new: true }
+    );
+
+    const found = await Stock.findOne({ productId });
+    await Stock.findOneAndUpdate(
+      { productId: foundProduct._id },
+      {
+        $set: {
+          totalStocks: newQuantity,
+        },
+      }
     );
     return res.status(201).json({ message: "Stock Updated" });
   } catch (err) {
@@ -162,21 +178,26 @@ export const addToStock = async (req, res) => {
 };
 
 export const updateStock = async (req, res) => {
-  try {
-    const { productId, totalOrders, totalStocks, totalLeads, totalRevenue } =
-      req.body;
+  const { productId, totalOrders, totalLeads, totalRevenue } = req.body;
 
-    await Stock.create({
-      productId,
-      totalOrders,
-      totalStocks,
-      totalLeads,
-      totalRevenue,
-    });
+  const found = await Stock.findOne({ productId });
+  await Stock.findOneAndUpdate(
+    { _id: found._id },
+    {
+      $set: {
+        totalOrders: found.totalOrders + totalOrders,
+        totalStocks: found.totalStocks - totalOrders,
+        totalLeads: totalLeads,
+        totalRevenue: found.totalRevenue + totalRevenue,
+      },
+    },
+    { new: true }
+  );
 
-    return res.status(201).json({ message: "Stock Updated" });
-  } catch (err) {
-    console.log(err);
-    res.status(400).json({ message: "Something went wrong" });
-  }
+  await Product.findOneAndUpdate(
+    { _id: productId },
+    { $set: { quantity: found.totalStocks - totalOrders } },
+    { new: true }
+  );
+  return res.status(201).json({ message: "Stock Updated" });
 };

@@ -5,7 +5,7 @@ const AllProducts = ({ productData, index }) => {
   return (
     <Link
       to={`/listProduct/${productData._id}`}
-      className="bg-slate-100 mx-4 my-2 rounded-md hover:shadow-[1px_1px_10px_rgb(256,256,256)] hover:-translate-y-1 transition ease-in-out duration-200 max-sm:mx-1"
+      className="bg-slate-100 mx-4 my-2 rounded-md hover:shadow-[1px_1px_10px_rgb(0,0,0)] hover:-translate-y-1 transition ease-in-out duration-200 max-sm:mx-1"
     >
       <div className="mx-2 py-2 flex cursor-pointer items-center gap-2 max-md:flex-col">
         <div className="flex justify-center items-center gap-2 font-mono flex-2 max-md:flex-col">

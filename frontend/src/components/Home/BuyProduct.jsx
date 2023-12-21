@@ -29,9 +29,9 @@ const BuyProduct = () => {
     e.preventDefault();
     const boughtItem = {
       productId: product._id,
-      totalOrders: quantity,
-      totalStocks: product.quantity,
-      totalLeads: Number(product.quantity / quantity),
+      totalOrders: Number(quantity),
+      totalStocks: product.quantity - quantity,
+      totalLeads: Math.trunc(product.quantity / quantity),
       totalRevenue: quantity * product.price,
     };
 
@@ -39,7 +39,7 @@ const BuyProduct = () => {
       .post(`${import.meta.env.VITE_API_ROUTE}/product/updateStock`, boughtItem)
       .then((res) => {
         const { message } = res.data;
-        enqueueSnackbar(message, { variant: "info" });
+        enqueueSnackbar(message, { variant: "success" });
         navigator(`/`);
         setLoading(false);
       })

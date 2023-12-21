@@ -52,10 +52,12 @@ const ListProduct = () => {
         <div className="px-2 flex flex-col gap-4 max-md:px-0 max-md:m-0 max-sm:gap-2">
           <CurrentProduct />
           <div className="flex bg-slate-300 rounded-xl font-mono py-4 items-center justify-center gap-4 max-md:flex-col">
-            <h2 className="text-4xl text-gray-800 max-sm:text-2xl">E-Commerce Listing: </h2>
+            <h2 className="text-4xl text-gray-800 max-sm:text-2xl">
+              E-Commerce Listing:{" "}
+            </h2>
             <button
               onClick={handleProductListing}
-              className="text-2xl bg-blue-400 px-4 py-2 rounded-md text-black"
+              className="text-2xl bg-blue-400 hover:bg-blue-600 px-4 py-2 rounded-md text-black"
             >
               List To Shopify
             </button>

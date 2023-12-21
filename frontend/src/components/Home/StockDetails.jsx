@@ -34,29 +34,29 @@ const StockDetails = () => {
   }, []);
   return (
     <div className="grid px-8 py-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 justify-center items-center">
-      <div className="flex flex-col font-mono  bg-blue-300 justify-center items-center py-8 rounded-lg">
+      <div className="flex flex-col font-mono  bg-blue-600 justify-center items-center py-8 rounded-lg hover:bg-slate-600">
         <span className="text-4xl text-rose-500 font-bold">
           {stockInfo.totalOrders}
         </span>
         <span className="text-2xl text-amber-500 font-bold">Total Orders</span>
       </div>
-      <div className="flex flex-col font-mono  bg-blue-300 justify-center items-center py-8 rounded-lg">
+      <div className="flex flex-col font-mono  bg-blue-600 justify-center items-center py-8 rounded-lg hover:bg-slate-600">
         <span className="text-4xl text-rose-500 font-bold">
           {stockInfo.totalStocks}
         </span>
         <span className="text-2xl text-amber-500 font-bold">Total Stocks</span>
       </div>
-      <div className="flex flex-col font-mono  bg-blue-300 justify-center items-center py-8 rounded-lg">
+      <div className="flex flex-col font-mono  bg-blue-600 justify-center items-center py-8 rounded-lg hover:bg-slate-600">
         <span className="text-4xl text-rose-500 font-bold">100</span>
         <span className="text-2xl text-amber-500 font-bold">Dead Stocks</span>
       </div>
-      <div className="flex flex-col font-mono  bg-blue-300 justify-center items-center py-8 rounded-lg">
+      <div className="flex flex-col font-mono  bg-blue-600 justify-center items-center py-8 rounded-lg hover:bg-slate-600">
         <span className="text-4xl text-rose-500 font-bold">
           {stockInfo.totalLeads}
         </span>
         <span className="text-2xl text-amber-500 font-bold">Total Leads</span>
       </div>
-      <div className="flex flex-col font-mono bg-blue-300 justify-center items-center py-8 rounded-lg">
+      <div className="flex flex-col font-mono bg-blue-600 justify-center items-center py-8 rounded-lg hover:bg-slate-600">
         <span className="text-4xl text-rose-500 font-bold">
           {stockInfo.totalRevenue}
         </span>
