@@ -45,7 +45,6 @@ const AddProduct = () => {
     e.preventDefault();
     if (!uploadedFile) {
       enqueueSnackbar("Product Image is Missing", { variant: "info" });
-      return;
     }
 
     const formData = new FormData();
@@ -177,6 +176,9 @@ const AddProduct = () => {
                 value={product.category ?? ""}
                 onChange={onChangeData}
               >
+                <option disabled value="">
+                  Select Category
+                </option>
                 {categories.map((category) => {
                   return (
                     <option key={category} value={category}>

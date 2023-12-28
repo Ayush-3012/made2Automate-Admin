@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Loader from "../partials/Loader";
 
 const AddToStock = () => {
@@ -10,6 +10,7 @@ const AddToStock = () => {
   const [product, setProduct] = useState({});
   const [quantity, setQuantity] = useState(Number(0));
   const [loading, setLoading] = useState(false);
+  const navigator = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
@@ -35,6 +36,7 @@ const AddToStock = () => {
       .then((res) => {
         const { message } = res.data;
         enqueueSnackbar(message, { variant: "success" });
+        navigator(`/`);
         setLoading(false);
       })
       .catch((err) => {

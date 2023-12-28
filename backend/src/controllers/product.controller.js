@@ -4,12 +4,40 @@ import { generateBarcode } from "../utils/barcode.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import axios from "axios";
 
+export const getAllProduct = async (req, res) => {
+  await Product.find({})
+    .then((found) => {
+      return res.status(201).json(found);
+    })
+    .catch(() => {
+      return res.status(400).json({ message: "Server Error" });
+    });
+};
+
+export const getUpdatedStock = async (req, res) => {
+  await Stock.find()
+    .then((found) => {
+      return res.status(201).json(found);
+    })
+    .catch(() => {
+      return res.status(400).json({ message: "Server Error" });
+    });
+};
+
 export const getProduct = async (req, res) => {
   const { id } = req.query;
   try {
     if (id.length > 12) {
-      const foundById = await Product.findOne({ _id: id });
-      return res.status(201).json(foundById);
+      try {
+        const foundProducts = await Product.find();
+        foundProducts.forEach((found) => {
+          if (found._id.toString() === id) {
+            return res.status(201).json(found);
+          }
+        });
+      } catch (error) {
+        console.log(error);
+      }
     } else if (id.length === 12) {
       const foundByBarcode = await Product.findOne({ barcodeDigits: id });
       return res.status(201).json(foundByBarcode);
@@ -19,16 +47,6 @@ export const getProduct = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ message: "Server Error" });
   }
-};
-
-export const getAllProduct = async (req, res) => {
-  await Product.find({})
-    .then((found) => {
-      return res.status(201).json(found);
-    })
-    .catch(() => {
-      return res.status(400).json({ message: "Server Error" });
-    });
 };
 
 export const addProduct = async (req, res) => {
@@ -136,16 +154,6 @@ export const listProduct = async (req, res) => {
     .catch((err) => {
       console.log(err);
       return res.status(400).json({ message: "Error while listing product" });
-    });
-};
-
-export const getUpdatedStock = async (req, res) => {
-  await Stock.find()
-    .then((found) => {
-      return res.status(201).json(found);
-    })
-    .catch(() => {
-      return res.status(400).json({ message: "Server Error" });
     });
 };
 

@@ -15,7 +15,7 @@ const CurrentProduct = () => {
         setProductData(res.data);
       })
       .catch((err) => console.log(err));
-  });
+  }, [productId]);
   return (
     <>
       <div className="px-2 flex flex-col gap-4 max-md:px-0 max-md:m-0 max-sm:gap-2">
